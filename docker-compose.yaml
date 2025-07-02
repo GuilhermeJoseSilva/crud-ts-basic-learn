@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres
+    container_name: postgres_db
+    restart: always
+    ports:
+      - "5432:5432"
+    env_file:
+      - .env
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  app:
+    build: .
+    container_name: node_app
+    volumes:
+      - .:/app
+    ports:
+      - "3000:3000"
+      - "5555:5555"
+    depends_on:
+      - db
+    command: npm run dev
+    env_file:
+      - .env
+
+volumes:
+  postgres_data:
