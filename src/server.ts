@@ -1,14 +1,14 @@
-import express from 'express';
+import express from "express";
+import userRoutes from "./routes/user.routes";
 
 const app = express();
 const PORT = 3000;
 
 app.use(express.json());
-
-app.get("/", (req, res) => {
-  res.send("Servidor TypeScript + Express no ar 🚀");
-});
+app.use("/users", userRoutes);
 
 app.listen(PORT, () => {
-  console.log(`Servidor rodando em http://localhost:${PORT}`);
+  console.log(`Rodando no localhost:${PORT}`);
 });
+
+console.log(" App reiniciado em:", new Date().toLocaleTimeString());
