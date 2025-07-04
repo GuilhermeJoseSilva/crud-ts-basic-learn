@@ -1,3 +1,4 @@
+import { error } from "console";
 import { UserRepository } from "../repositories/UserRepository";
 
 export class UserService {
@@ -16,5 +17,38 @@ export class UserService {
 
         const newUser = await this.userRepository.create({name,email});
         return newUser;
+    }
+
+    async getAllUsers() {
+        return await this.userRepository.findAll();
+    }
+
+    async getUserById(id: number) {
+        const user = await this.userRepository.findById(id);
+
+        if(!id){
+            throw new Error("User not found");
+        }
+
+        return user;
+    }
+
+    async updateUser(id: number, name: string, email: string) {
+        const user = await this.userRepository.findById(id);
+        if(!id) {
+            throw new Error("Usuário não encontrado");
+        }
+
+        return await this.userRepository.updateById(id, { name, email });
+    }
+
+    async deleteUser(id: number) {
+        const user = await this.userRepository.findById(id);
+
+        if(!user){
+            throw new Error("Usuário não encontrado");
+        }
+
+        return await this.userRepository.deleteById(id);
     }
 }
