@@ -1,5 +1,6 @@
 import { error } from "console";
 import { UserRepository } from "../repositories/UserRepository";
+import bcrypt from "bcrypt";
 
 export class UserService {
     private userRepository: UserRepository;
@@ -8,15 +9,19 @@ export class UserService {
         this.userRepository = new UserRepository();
     }
 
-    async createUser(name: string, email: string) {
-        // verifica se o email ja está cadastrado
-        const userExists = await this.userRepository.findByEmail(email);
-        if(userExists) {
-            throw new Error("E-mail já cadastrado.");
+    async createUser(name: string, email: string, password: string) {
+        const existingUser = await this.userRepository.findByEmail(email);
+        if (existingUser) {
+            throw new Error("Email já cadastrado");
         }
 
-        const newUser = await this.userRepository.create({name,email});
-        return newUser;
+        const hashedPassword = await bcrypt.hash(password, 10); // saltRounds = 10
+
+        return await this.userRepository.create({
+            name,
+            email,
+            password: hashedPassword,
+        });
     }
 
     async getAllUsers() {
